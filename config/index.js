@@ -9,8 +9,13 @@ let connection = createPool({
     multipleStatements: true,
     connectionLimit: 30
 })
+
 connection.on('connection', (pool) => {
     if(!pool) throw new Error('couldn\'t connect to the database, please try again later')
+  
+connection.on('connection', (err) => {
+    if(err) throw new Error('couldn\'t connect to the database, please try again later')
+
 })
 export {
     connection 
