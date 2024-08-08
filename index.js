@@ -43,27 +43,29 @@ router.get('/users', (req,res) => {
         })
     }
 })
-router.get('/user/:id', (req, res) => {
-    try{
+// endpoint for updating 
+router.patch('/product/:id', (req, res) => {
+    try {
+        const { productName, productDescription, productPrice } = req.body;
         const strQry = `
-        SELECT userID, fistName, lastName, age, emailAdd
-        FROM Users
-        WHERE userID = ${req.params.id}
-        `
-        db.query(strQry, (err, result) => {
-            if(err) throw new Error(`unable to fetch user details`)
+        UPDATE Products
+        SET prodName = ?, productDescription = ?, productPrice = ?
+        WHERE productID = ?;
+        `;
+        db.query(strQry, [productName, productDescription, productPrice, req.params.id], (err, results) => {
+            if (err) throw new Error(err);
             res.json({
                 status: res.statusCode,
-                result: result[0]
-            })
-        })
-    } catch (e){
+                results
+            });
+        });
+    } catch (e) {
         res.json({
             status: 404,
             msg: e.message
-        })
+        });
     }
-})
+});
 
 //when the user want to insert an endpoint thats not included
 router.get('*', (req,res) => {

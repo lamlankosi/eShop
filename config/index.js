@@ -1,5 +1,5 @@
 import { createPool } from "mysql2";
-import 'doconfigtenv/config'
+import 'dotconfigtenv/config'
 
 let connection = createPool({
     host: process.env.hostDb,
