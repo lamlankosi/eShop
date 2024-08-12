@@ -4,7 +4,7 @@ import { connection as db } from './config/index.js'
 //CREATE TOKEN
 import {createToken} from './middleware/AuthenticateUser.js'
 //ENCRIPTYING PASSWORD
-import {hash} from 'bcrypt'
+import {compare, hash} from 'bcrypt'
 //when registering a user 
 import bodyParser from 'body-parser'
 
@@ -110,39 +110,87 @@ router.patch('/users/:id', async (req,res) => {
 
 
 //register a user
-router.post('/register', async(req,res) => {
-    try{    
+router.post('/register', async (req, res) => {
+    try {
         let data = req.body
         data.pwd = await hash(data.pwd, 12)
-        //payload
+        // Payload
         let user = {
             emailAdd: data.emailAdd,
             pwd: data.pwd
         }
-        // SET = sending data in a array
         let strQry = `
         INSERT INTO Users
         SET ?;
         `
-        db.query(strQry, [data], (err) =>{
-            if (err){
+        db.query(strQry, [data], (err) => {
+            if (err) {
                 res.json({
-                    //when the user entered an already account 
                     status: res.statusCode,
-                    msg: 'This email already been  taken'
+                    msg: 'This email has already been taken'
+                })
+            } else {
+                const token = createToken(user)
+                res.json({
+                    token,
+                    msg: 'You are now registered.'
                 })
             }
         })
     } catch (e) {
-        const token = createToken(user)
+        // 'Unable to add a new user.'
         res.json({
-            token,
-            msg: 'You are now registered'
+            status: 404,
+            msg: e.message
         })
     }
 })
 
 
+//login a user
+router.post('/login', (req, res) => {
+    try{
+        const {emailAdd, pwd} = req.body
+        const strQry = `
+        SELECT userID, fistName, lastName, age, emailAdd, pwd
+        FROM Users
+        WHERE emailAdd = '${emailAdd}'`
+        db.query(strQry, async(err, result) => {
+            if (err) throw new Error ('To login please review')
+                if(!result?.length) {
+                    res.json(
+                        {
+                            status: 401,
+                            ms: 'You provided a wrong email'
+                        }
+                    )
+                } else {
+                    const  isValidPass = await compare(pwd, result[0].pwd)
+                    if(isValidPass) {
+                        const token = createToken({
+                            emailAdd,
+                            pwd
+                        })
+                        res.json({
+                            status: res.statusCode,
+                            token,
+                            results: result[0]
+                        })
+                    } else {
+                        res.json({
+                            status: 401,
+                            msg: 'Invalid password or you have not registered'
+                        })
+                    }
+                }
+        })
+    } catch (e) {
+        req.json ({
+            status: 404,
+            msg: e.message
+        })
+    }
+})
 //when the user want to insert an endpoint thats not included
 router.get('*', (req,res) => {
     res.json({
@@ -151,7 +199,28 @@ router.get('*', (req,res) => {
     })
 })
 
-
+//delete a user
+router.delete('/user/:id', (req, res) => {
+    try{
+        const strQry = `
+        DELETE  
+        FROM Users
+        WHERE userID= ${req.params.id};
+        `
+        db.query(strQry, (err) => {
+            if (err) throw new Error('To delete a user, please review your delete query.')
+            res.json({
+                status: res.statusCode,
+                msg: 'A user\'s information was removed'
+            })
+        })
+    } catch (e){
+        res.json({
+            status: 404,
+            msg: e.message
+        })
+    }
+})
 app.listen(port, () => {
     console.log(`Server is running on ${port}`);
 })
