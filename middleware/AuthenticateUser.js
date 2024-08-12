@@ -1,4 +1,4 @@
-import 'doconfigtenv/config'
+import 'dotenv/config'
 import jwt from 'jsonwebtoken'
 
 const {sign, verify} = jwt
