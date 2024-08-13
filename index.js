@@ -108,8 +108,8 @@ router.patch('/users/:id', async (req,res) => {
 
 
 //register a user
-router.post('/register', async (req, res) => {
-    try {
+router.post('/register', async (req, res) => { //controller
+    try { //model
         let data = req.body
         data.pwd = await hash(data.pwd, 12)
         // Payload
@@ -191,14 +191,6 @@ router.post('/login', (req, res) => {
 })
 
 
-//when the user want to insert an endpoint thats not included
-router.get('*', (req,res) => {
-    res.json({
-        status: 400,
-        msg: 'resource not found'
-    })
-})
-
 //delete a user
 router.delete('/user/:id', (req, res) => {
     try{
@@ -221,6 +213,17 @@ router.delete('/user/:id', (req, res) => {
         })
     }
 })
+
+
+//when the user want to insert an endpoint thats not included
+router.get('*', (req,res) => {
+    res.json({
+        status: 400,
+        msg: 'resource not found'
+    })
+})
+
+
 app.listen(port, () => {
     console.log(`Server is running on ${port}`);
 })
