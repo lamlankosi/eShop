@@ -1,3 +1,4 @@
+// we are creating a database connection
 import { createPool } from "mysql2";
 import 'dotenv/config'
 

@@ -5,7 +5,7 @@ import { connection as db } from './config/index.js'
 import {createToken} from './middleware/AuthenticateUser.js'
 //ENCRIPTYING PASSWORD
 import {compare, hash} from 'bcrypt'
-//when registering a user 
+//when registering a user/ eg=req.body
 import bodyParser from 'body-parser'
 
 //create express
@@ -36,7 +36,7 @@ router.get('^/$|/eShop', (req, res) => {
 router.get('/users', (req,res) => {
     try{
         const strQry = `
-        SELECT fistName, lastName, age, emailAdd
+        SELECT fistName, lastName, age, emailAdd, userRole, profileURL
         FROM Users;
         `
         db.query(strQry, (err, results) => {
@@ -55,36 +55,34 @@ router.get('/users', (req,res) => {
 })
 
 
-// endpoint for updating products
-router.patch('/product/:id', (req, res) => {
+//endpoint for user
+router.get('/user/:id', (req, res) => {
     try {
-        const { productName, productDescription, productPrice } = req.body;
         const strQry = `
-        UPDATE Products
-        SET prodName = ?, productDescription = ?, productPrice = ?
-        WHERE productID = ?;
-        `;
-        db.query(strQry, [productName, productDescription, productPrice, req.params.id], (err, results) => {
-            if (err) throw new Error(err);
+        SELECT userID, fistName, lastName, age, emailAdd, userRole, profileURL
+        FROM Users
+        WHERE userID = ${req.params.id};
+        `
+        db.query(strQry, (err, result) => {
+            if (err) throw new Error('Issue when retrieving a user.')
             res.json({
                 status: res.statusCode,
-                results
-            });
-        });
+                result: result[0]
+            })
+        })
     } catch (e) {
         res.json({
             status: 404,
             msg: e.message
-        });
+        })
     }
-});
+})
 
 
 //edpoint for updating users
 router.patch('/users/:id', async (req,res) => {
     try{
         let data = req.body
-
         if (data.pwd) {
             data.pwd = await hash(data.pwd, 12)
         }
@@ -152,7 +150,7 @@ router.post('/login', (req, res) => {
     try{
         const {emailAdd, pwd} = req.body
         const strQry = `
-        SELECT userID, fistName, lastName, age, emailAdd, pwd
+        SELECT userID, fistName, lastName, age, emailAdd, pwd, userRole, profileURL
         FROM Users
         WHERE emailAdd = '${emailAdd}'`
         db.query(strQry, async(err, result) => {
@@ -191,6 +189,8 @@ router.post('/login', (req, res) => {
         })
     }
 })
+
+
 //when the user want to insert an endpoint thats not included
 router.get('*', (req,res) => {
     res.json({

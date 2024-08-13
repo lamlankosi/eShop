@@ -4,7 +4,7 @@ function errorhandling(err, req, res, next) {
             {
                 status: err.status || 
                 res.statusCode || 500,
-                err: ("An errror occurred. Please try again later")
+                err: ("An error occurred. Please try again later")
             }
         )
     }
