@@ -130,14 +130,14 @@ class Users { //method
         }
     }
 
-    loginUser(req, res) {
+     loginUser(req, res) {
         try{
             const {emailAdd, pwd} = req.body
             const strQry = `
             SELECT userID, fistName, lastName, age, emailAdd, pwd, userRole, profileURL
             FROM Users
             WHERE emailAdd = '${emailAdd}'`
-            db.query(strQry, async(err, result) => {
+            db.query(strQry, async (err, result) => {
                 if (err) throw new Error ('To login please review')
                     if(!result?.length) {
                         res.json(
