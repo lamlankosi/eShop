@@ -26,7 +26,8 @@ class Products {
         try{
             const strQry = `
             SELECT productID, prodName, category, prodDescription, prodURL, amount
-            FROM Products;
+            FROM Products
+            WHERE productID=${req.params.id};
             `
             db.query(strQry, (err,results) => {
                 if(err) throw new Error ('Unable to fetch a product...')
@@ -69,7 +70,7 @@ class Products {
             const strQry = `
             DELETE  
             FROM Products
-            WHERE prodID= ${req.params.id};
+            WHERE productID= ${req.params.id};
             `
             db.query(strQry, (err) => {
                 if (err) throw new Error('Unable to delete  a product... please try again')
@@ -117,7 +118,7 @@ class Products {
             const strQry = `
             UPDATE Products
             SET ?
-            WHERE prodID = ${req.params.id};`
+            WHERE productID = ${req.params.id};`
             db.query(strQry, [data], (err) => {
                 if (err) throw new Error(err);
                 res.json({
