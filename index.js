@@ -1,6 +1,6 @@
-import {userRouter,express} from './controller'
+import {express, userRouter } from './controller/userController.js'
 import path from 'path'
-import {prodRouter} from './controller/prodController'
+import {prodRouter} from './controller/prodController.js'
 // import { connection as db } from './config/index.js'
 // //CREATE TOKEN
 // import {createToken} from './middleware/AuthenticateUser.js'
@@ -13,24 +13,21 @@ import {prodRouter} from './controller/prodController'
 
 const app = express()
 const port = +process.env.PORT || 4000
-const router = express.Router()
-
 
 //Middleware  - process that happens between request and response
-app.use(router, 
-    '/user', userRouter,
-    '/product', prodRouter,
+app.use('/users', userRouter)
+app.use('/products', prodRouter)
+app.use(
     express.static('./static'),
     express.json(),
     express.urlencoded({
         extended: true
 }))
 
-router.use(bodyParser.json())
 
 //Endpoint for homepage
 //eg. localhost:3001, ('^/$|eShop') = the user will be able write eshop or not on the url
-router.get('^/$|/eShop', (req, res) => {
+app.get('^/$|/eShop', (req, res) => {
     res.status(200).sendFile(path.resolve('./static/html/index.html'))
 })
 
@@ -220,7 +217,7 @@ router.get('^/$|/eShop', (req, res) => {
 
 //when the user want to insert an endpoint thats not included
 
-router.get('*', (req,res) => {
+app.get('*', (req,res) => {
     res.json({
         status: 400,
         msg: 'resource not found'
