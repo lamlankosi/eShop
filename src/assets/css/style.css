@@ -10,11 +10,18 @@
     display: none;
 }
 
+/* LOGO */
+img[alt="Logo"] {
+    width: 5rem;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
+}
 
-
-
-
-
+.wrapper{
+    display: grid;
+    grid-template-rows: auto minmax(100dvh, 100%) auto;
+}
 
 
 
