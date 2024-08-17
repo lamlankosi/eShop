@@ -15,15 +15,19 @@ const app = express()
 const port = +process.env.PORT || 4000
 
 //Middleware  - process that happens between request and response
-app.use('/users', userRouter)
-app.use('/products', prodRouter)
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    next()
+}) 
+app.use('/user', userRouter)
+app.use('/product', prodRouter)
 app.use(
     express.static('./static'),
     express.json(),
     express.urlencoded({
         extended: true
 }))
-
 
 //Endpoint for homepage
 //eg. localhost:3001, ('^/$|eShop') = the user will be able write eshop or not on the url

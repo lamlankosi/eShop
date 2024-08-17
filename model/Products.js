@@ -21,35 +21,13 @@ class Products {
             })
         }
     }
-
-    fetchProduct(req, res) {
-        try{
-            const strQry = `
-            SELECT productID, prodName, category, prodDescription, prodURL, amount
-            FROM Products
-            WHERE productID=${req.params.id};
-            `
-            db.query(strQry, (err,results) => {
-                if(err) throw new Error ('Unable to fetch a product...')
-                    res.json({
-                        status: res.statusCode,
-                        resuts: results[0]
-                    })
-            })
-        } catch (e){
-            res.json({
-                status: res.statusCode,
-                msg: e.message
-            })
-        }
-    }
     recentProducts(req,res){
         try{
             const strQry = `
             SELECT productID, prodName, category, prodDescription, prodURL, amount
             FROM Products
-            ORDER BY produtID DESC
-            LIMIT 5
+            ORDER BY productID DESC
+            LIMIT 5;
             `
             db.query(strQry, (err, results) => {
                 if (err) throw new Error ('Unable to retrieve recent products')
@@ -57,6 +35,28 @@ class Products {
                         status: res.statusCode,
                         results
                     })
+            })
+        } catch (e) {
+            res.json({
+                status: 404,
+                msg: e.message
+            })
+        }
+    }
+
+    fetchProduct(req, res) {
+        try {
+            const strQry = `
+            SELECT productID, prodName, category, prodDescription, prodURL, amount
+            FROM Products
+            WHERE productID = ${req.params.id};
+            `
+            db.query(strQry, (err, result) => { 
+                if (err) throw new Error(err)
+                res.json({
+                    status: res.statusCode,
+                    result: result[0]
+                })
             })
         } catch (e) {
             res.json({
@@ -108,7 +108,7 @@ class Products {
         } catch (e) {
             res.json({
                 status: 404,
-                msg: e.message
+                error: e.message
             });
         }
     }

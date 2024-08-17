@@ -6,19 +6,20 @@ import {products} from '../model/index.js'
 const prodRouter =  express.Router()
 prodRouter.use(bodyParser.json())
 
-prodRouter.get('/',  (req, res) => {
+prodRouter.get('/',   (req, res) => {
     products.fetchProducts(req, res)
-})
-
-prodRouter.get('/:id', (req, res) => {
-    products.fetchProduct(req, res)
 })
 
 prodRouter.get('/recent', (req,res) => {
     products.recentProducts(req,res)
 })
 
-prodRouter.post('/add', (req, res) => {
+prodRouter.get('/:id',  (req, res) => {
+    products.fetchProduct(req, res)
+})
+
+
+prodRouter.post('/add',  (req, res) => {
     products.addProduct(req, res)
 })
 
@@ -27,7 +28,7 @@ prodRouter.patch('/:id', (req, res) => {
 })
 
 prodRouter.delete('/:id', (req, res) => {
-    products.deleteProduct(req,res)
+    products.deleteProducts(req,res)
 })
 
 export {
