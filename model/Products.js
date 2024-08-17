@@ -82,7 +82,7 @@ class Products {
         } catch (e){
             res.json({
                 status: 404,
-                msg: e.message
+                error: e.message
             })
         }
     }
@@ -129,7 +129,7 @@ class Products {
         } catch (e) {
             res.json({
                 status: 400,
-                msg: e.message
+                error: e.message
             });
         }
     }  
