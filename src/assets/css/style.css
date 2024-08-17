@@ -19,8 +19,8 @@ img[alt="Logo"] {
 }
 
 .wrapper{
-    display: grid;
-    grid-template-rows: auto minmax(100dvh, 100%) auto;
+  display: grid;
+  grid-template-rows: auto minmax(100dvh, 100%) auto;
 }
 
 

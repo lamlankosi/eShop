@@ -11,12 +11,12 @@
 
 <script>
 export default {
-    components: {
-        name: "cardComp"
-    }
+    name: "CardComp"
 }
 </script>
 
 <style scoped>
-
+.card {
+    width: 18rem;
+}
 </style>
