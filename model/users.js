@@ -130,7 +130,7 @@ class Users { //method
         }
     }
 
-     loginUser(req, res) {
+    loginUser(req, res) {
         try{
             const {emailAdd, pwd} = req.body
             const strQry = `
